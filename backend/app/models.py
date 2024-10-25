@@ -1,7 +1,12 @@
+import datetime
+from typing import Optional
 import uuid
 
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
+
+from datetime import datetime
+from typing import Optional
 
 
 # Shared properties
@@ -39,11 +44,55 @@ class UpdatePassword(SQLModel):
     new_password: str = Field(min_length=8, max_length=40)
 
 
-# Database model, database table inferred from class name
+# Extend User from UserBase
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    hashed_password: str
+    email_verified: bool = Field(default=False)
+    image: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    hashed_password: Optional[str] = None  # Optional for SSO users
+
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
+    accounts: list["Account"] = Relationship(back_populates="user", cascade_delete=True)
+    sessions: list["AuthSession"] = Relationship(
+        back_populates="user", cascade_delete=True
+    )
+
+
+# New Account model for NextAuth
+class Account(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    user_id: uuid.UUID = Field(foreign_key="user.id", nullable=False)
+    provider_id: str = Field(max_length=255)
+    provider_type: str = Field(max_length=255)
+    provider_account_id: str = Field(max_length=255)
+    refresh_token: Optional[str]
+    access_token: str
+    expires_at: Optional[datetime]
+    token_type: Optional[str]
+    scope: Optional[str]
+    id_token: Optional[str]
+    session_state: Optional[str]
+
+    user: User = Relationship(back_populates="accounts")
+
+
+# VerificationToken model for email verification
+class VerificationToken(SQLModel, table=True):
+    identifier: str = Field(primary_key=True, max_length=255)
+    token: str
+    expires: datetime
+
+
+# AuthSession model for active sessions
+class AuthSession(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    expires: datetime
+    session_token: str
+    user_id: uuid.UUID = Field(foreign_key="user.id", nullable=False)
+
+    user: User = Relationship(back_populates="sessions")
 
 
 # Properties to return via API, id is always required
