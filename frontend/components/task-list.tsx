@@ -4,23 +4,24 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useTaskForm } from "@/app/contexts/TaskFormContext";
 
-export default function TaskList({ tasks, onUpdate, onDelete }) {
+export default function TaskList({
+  tasks,
+  onDelete,
+}: {
+  tasks: any;
+  onDelete: any;
+}) {
   const router = useRouter();
   const { openForm } = useTaskForm();
 
-  async function handleUpdate(id, data) {
-    await onUpdate(id, data);
-    router.refresh();
-  }
-
-  async function handleDelete(id) {
+  async function handleDelete(id: string) {
     await onDelete(id);
     router.refresh();
   }
 
   return (
     <div className="flex flex-wrap gap-4 mt-4">
-      {tasks.map((task) => (
+      {tasks.map((task: any) => (
         <div
           key={task.id}
           className="w-full md:w-1/2 lg:w-1/3 p-4 bg-white shadow-md rounded-lg border border-gray-200"

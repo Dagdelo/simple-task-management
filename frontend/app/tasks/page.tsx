@@ -106,11 +106,7 @@ export default async function TasksPage() {
         {session?.user && (
           <>
             <AddTaskButton />
-            <TaskList
-              tasks={tasks.data}
-              onUpdate={updateTaskAction}
-              onDelete={deleteTaskAction}
-            />
+            <TaskList tasks={tasks.data} onDelete={deleteTaskAction} />
             <TaskForm onSubmit={addTaskAction} onUpdate={updateTaskAction} />
           </>
         )}

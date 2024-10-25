@@ -21,7 +21,7 @@ export default async function Index() {
         examples to see how to secure pages and get session data.
       </div>
       <div>
-        WebAuthn users are reset on every deploy, don't expect your test user(s)
+        WebAuthn users are reset on every deploy, dont expect your test user(s)
         to still be available after a few days. It is designed to only
         demonstrate registration, login, and logout briefly.
       </div>

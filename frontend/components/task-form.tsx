@@ -5,7 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useTaskForm } from "@/app/contexts/TaskFormContext";
 
-export function TaskForm({ onSubmit, onUpdate }) {
+export function TaskForm({
+  onSubmit,
+  onUpdate,
+}: {
+  onSubmit: any;
+  onUpdate: any;
+}) {
   const { isFormVisible, editingTask, closeForm } = useTaskForm();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -29,7 +35,7 @@ export function TaskForm({ onSubmit, onUpdate }) {
     }
   }, [editingTask]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     console.log("editingTask", editingTask);
     e.preventDefault();
     if (editingTask) {

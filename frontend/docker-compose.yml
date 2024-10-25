@@ -1,5 +1,5 @@
 services:
-  authjs-docker-test:
+  trially-stm-frontend:
     build: .
     environment:
       - TEST_KEYCLOAK_USERNAME

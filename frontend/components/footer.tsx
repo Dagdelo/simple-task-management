@@ -1,5 +1,5 @@
-import CustomLink from "./custom-link"
-import packageJSON from "next-auth/package.json"
+import CustomLink from "./custom-link";
+import packageJSON from "next-auth/package.json";
 
 export default function Footer() {
   return (
@@ -25,5 +25,5 @@ export default function Footer() {
         </CustomLink>
       </div>
     </footer>
-  )
+  );
 }

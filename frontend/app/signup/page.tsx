@@ -5,7 +5,7 @@ export const metadata = {
 export default async function SignUpPage({
   searchParams,
 }: {
-  searchParams: { error?: string };
+  searchParams: any;
 }) {
   const error = await searchParams;
   const errorMessage = error.error;

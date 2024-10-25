@@ -22,8 +22,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: new URLSearchParams({
-            username: credentials?.username || "",
-            password: credentials?.password || "",
+            username: String(credentials?.username || ""),
+            password: String(credentials?.password || ""),
           }),
         });
 
@@ -59,8 +59,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     async session({ session, token }) {
       // Fetch user info server-side only
-      session.user = await fetchUserInfo(token.accessToken);
-      session.accessToken = token.accessToken;
+      session.user = await fetchUserInfo(token.accessToken as string);
+      session.accessToken = token?.accessToken as string;
       return session;
     },
   },
@@ -80,11 +80,5 @@ async function fetchUserInfo(token: string) {
 declare module "next-auth" {
   interface Session {
     user?: any;
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT {
-    accessToken?: string;
   }
 }
