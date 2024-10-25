@@ -60,18 +60,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       // Fetch user info server-side only
       session.user = await fetchUserInfo(token.accessToken);
+      session.accessToken = token.accessToken;
       return session;
-    },
-  },
-  cookies: {
-    sessionToken: {
-      name: "next-auth.session-token",
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
     },
   },
   basePath: "/auth",
