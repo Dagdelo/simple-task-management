@@ -1,38 +1,117 @@
-import CustomLink from "@/components/custom-link";
-import { auth } from "auth";
+import { auth } from "@/auth";
+import AddTaskButton from "@/components/add-task-button";
+import TaskList from "@/components/task-list";
+import { revalidatePath } from "next/cache";
+import { TaskFormProvider } from "@/app/contexts/TaskFormContext";
+import { TaskForm } from "@/components/task-form";
 
-export default async function Index() {
+const API_SERVER = process.env.API_SERVER;
+
+async function callItemsService(
+  url: string,
+  method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
+  body?: any
+) {
+  const session = await auth();
+  const token = session?.accessToken;
+  const res = await fetch(`${API_SERVER}${url}`, {
+    method,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (!res.ok) throw new Error(`Failed to ${method} ${url}`);
+  return await res.json();
+}
+
+export default async function TasksPage() {
   const session = await auth();
 
+  // Fetch all items only if authenticated
+  const tasks = session?.user?.id
+    ? await callItemsService("/api/v1/items/")
+    : [];
+
+  // Server action for adding a new task
+  async function addTaskAction({
+    title,
+    description,
+    status,
+    due_date,
+  }: {
+    title: string;
+    description?: string;
+    status: string;
+    due_date?: string;
+  }) {
+    "use server";
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("User not authenticated");
+
+    await callItemsService("/api/v1/items/", "POST", {
+      title,
+      description,
+      status,
+      due_date,
+    });
+
+    revalidatePath("/tasks");
+  }
+
+  // Server action for updating a task
+  async function updateTaskAction(
+    id: string,
+    {
+      title,
+      description,
+      status,
+      due_date,
+    }: {
+      title?: string;
+      description?: string;
+      status?: string;
+      due_date?: string;
+    }
+  ) {
+    "use server";
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("User not authenticated");
+
+    await callItemsService(`/api/v1/items/${id}`, "PUT", {
+      title,
+      description,
+      status,
+      due_date,
+    });
+
+    revalidatePath("/tasks");
+  }
+
+  // Server action for deleting a task
+  async function deleteTaskAction(id: string) {
+    "use server";
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("User not authenticated");
+
+    await callItemsService(`/api/v1/items/${id}`, "DELETE");
+
+    revalidatePath("/tasks");
+  }
+
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-3xl font-bold">NextAuth.js Example</h1>
-      <div>
-        This is an example site to demonstrate how to use{" "}
-        <CustomLink href="https://nextjs.authjs.dev">NextAuth.js</CustomLink>{" "}
-        for authentication. Check out the{" "}
-        <CustomLink href="/server-example" className="underline">
-          Server
-        </CustomLink>{" "}
-        and the{" "}
-        <CustomLink href="/client-example" className="underline">
-          Client
-        </CustomLink>{" "}
-        examples to see how to secure pages and get session data.
-      </div>
-      <div>
-        WebAuthn users are reset on every deploy, dont expect your test user(s)
-        to still be available after a few days. It is designed to only
-        demonstrate registration, login, and logout briefly.
-      </div>
-      <div className="flex flex-col rounded-md bg-gray-100">
-        <div className="rounded-t-md bg-gray-200 p-4 font-bold">
-          Current Session
-        </div>
-        <pre className="whitespace-pre-wrap break-all px-4 py-6">
-          {JSON.stringify(session, null, 2)}
-        </pre>
-      </div>
-    </div>
+    <TaskFormProvider>
+      <main>
+        {!session?.user && <h1> Please sign in to see the tasks. </h1>}
+        {session?.user && (
+          <>
+            <AddTaskButton />
+            <TaskList tasks={tasks.data} onDelete={deleteTaskAction} />
+            <TaskForm onSubmit={addTaskAction} onUpdate={updateTaskAction} />
+          </>
+        )}
+      </main>
+    </TaskFormProvider>
   );
 }
