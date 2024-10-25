@@ -24,6 +24,7 @@ Clone the repository and follow the instructions below:
   - `docker compose watch`
   - `docker compose stop frontend`
   - `cd frontend && npm run dev`
+    - For the 1st time, you need to run `npm install` in the frontend folder.
 
 _Note to the reviewer_: There is a redirect issue with the docker compose local stack. This is why the frontend is stopped and then started locally (no docker).
 
