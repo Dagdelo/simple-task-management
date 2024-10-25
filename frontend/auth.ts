@@ -65,6 +65,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   basePath: "/auth",
+  trustHost: true,
 });
 
 // Helper function to fetch user info
