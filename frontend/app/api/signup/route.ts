@@ -20,10 +20,14 @@ export async function POST(request: Request) {
       }),
     }
   );
+  
+  // Use the request URL to create an absolute URL for the redirect to the home page
+  const authUrl = new URL(process.env.NEXTAUTH_URL! ?? "http://localhost:5173");
+  const reqUrl = new URL(request.url)
+  const redirectUrl = new URL("/",  reqUrl.hostname === "0.0.0.0" ? authUrl.origin : request.url);
+  console.log("request.url: ", request.url)
 
   if (response.ok) {
-    // Use the request URL to create an absolute URL for the redirect to the home page
-    const redirectUrl = new URL("/", request.url);
     return NextResponse.redirect(redirectUrl.toString());
   } else {
     // Redirect back to the form with an error message as a query parameter
@@ -33,7 +37,7 @@ export async function POST(request: Request) {
     );
     const errorRedirectUrl = new URL(
       `/signup?error=${errorMessage}`,
-      request.url
+      redirectUrl
     );
     return NextResponse.redirect(errorRedirectUrl.toString());
   }
