@@ -1,5 +1,9 @@
 # Full Stack FastAPI & NextJS Task Management App
 
+- _This assesment utilize two templates as code base:_
+  - [FastAPI template project](https://github.com/fastapi/full-stack-fastapi-template)
+  - [Next-auth sample project](https://github.com/nextauthjs/next-auth-example)
+
 ## Technology Stack and Features
 
 - ⚡ [**FastAPI**](https://fastapi.tiangolo.com) for the Python backend API.
@@ -18,15 +22,7 @@
 
 ## How To Use It
 
-Clone the repository and follow the instructions below:
-
-- Run the following commands to start the application:
-  - `docker compose watch`
-  - `docker compose stop frontend`
-  - `cd frontend && npm run dev`
-    - For the 1st time, you need to run `npm install` in the frontend folder.
-
-_Note to the reviewer_: There is a redirect issue with the docker compose local stack. This is why the frontend is stopped and then started locally (no docker).
+Clone the repository and follow the instructions below.
 
 ### Configure
 
@@ -34,9 +30,10 @@ You can then update configs in the `.env` files to customize your configurations
 
 Before deploying it, make sure you change at least the values for:
 
-- `SECRET_KEY`
-- `FIRST_SUPERUSER_PASSWORD`
-- `POSTGRES_PASSWORD`
+- `AUTH_SECRET`
+- `AUTH_TRUST_HOST`
+- `AUTH_URL`
+- `API_SERVER`
 
 You can (and should) pass these as environment variables from secrets.
 
