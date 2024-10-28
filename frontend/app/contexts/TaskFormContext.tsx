@@ -26,7 +26,6 @@ const TaskFormProvider = ({ children }: { children: ReactNode }) => {
   const [editingTask, setEditingTask] = useState<TaskData | null>(null);
 
   const openForm = (task?: TaskData) => {
-    console.log("openForm", task);
     setEditingTask(task!);
     setIsFormVisible(true);
   };

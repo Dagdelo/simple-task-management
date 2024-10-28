@@ -20,7 +20,6 @@ export function TaskForm({
 
   useEffect(() => {
     if (editingTask) {
-      console.log("effect", editingTask);
       setTitle(editingTask.title || "");
       setDescription(editingTask.description || "");
       setStatus(editingTask.status || "pending");
@@ -36,7 +35,6 @@ export function TaskForm({
   }, [editingTask]);
 
   const handleSubmit = async (e: any) => {
-    console.log("editingTask", editingTask);
     e.preventDefault();
     if (editingTask) {
       await onUpdate(editingTask.id, {
