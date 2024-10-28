@@ -7,9 +7,9 @@ import Header from "@/components/header"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "NextAuth.js Example",
+  title: "Simple Task Management System",
   description:
-    "This is an example site to demonstrate how to use NextAuth.js for authentication",
+    "This is an fullstack assessment for Trially.",
 }
 
 export default function RootLayout({ children }: React.PropsWithChildren) {
