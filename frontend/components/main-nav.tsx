@@ -32,7 +32,7 @@ export function MainNav() {
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink
-              href="/tasks"
+              href="/"
               className={navigationMenuTriggerStyle()}
             >
               Tasks
